@@ -11,7 +11,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #1a202c;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%232d3748' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%232d3748' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             color: #ffffff;
         }
         .pixel-font { font-family: 'Press Start 2P', cursive; }
@@ -95,6 +95,7 @@
                 <button id="start-game-btn" class="action-button btn-green">Start Game</button>
                 <button id="how-to-play-btn" class="action-button btn-orange">How to Play</button>
                 <button id="ranking-btn" class="action-button btn-purple">Ranking</button>
+                <button id="learning-center-btn" class="action-button btn-blue">Learning Center</button>
             </div>
         </div>
 
@@ -139,6 +140,124 @@
             <div class="text-center mt-8">
                 <button id="back-to-home-from-review-btn" class="action-button btn-blue">Return to Base</button>
                 <button id="back-to-gameover-from-review-btn" class="action-button btn-purple ml-4">Back to Game Over</button>
+            </div>
+        </div>
+
+        <!-- Learning Center Screen -->
+        <div id="learning-center-screen" class="hidden main-panel p-6 md:p-8">
+            <h2 class="pixel-font text-4xl text-center text-yellow-300 mb-8">Learning Center</h2>
+            <div id="learning-content" class="max-h-[80vh] overflow-y-auto space-y-6 pr-4 text-lg">
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">World Wide Web (WWW)</h3>
+                    <p>The 'World Wide Web' is like a giant library of websites. You use a 'browser' (like Chrome or Safari) to visit these sites using their address, called a 'URL'.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Creating Strong Passwords</h3>
+                    <p>A strong password is your secret key! It should be long and mix uppercase letters, lowercase letters, numbers, and symbols ($ ! ? &). Never use easy-to-guess things like your name or birthday.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Understanding Usernames</h3>
+                    <p>A 'username' is a special nickname you use online. It's how websites and games know who you are. It's different from your real name and helps keep you anonymous.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Downloading Files</h3>
+                    <p>A 'download' is when you copy a file, like a game or a picture, from the internet onto your computer. Always be careful and only download files from websites you trust!</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">What is an Icon?</h3>
+                    <p>An 'icon' is a small picture on your screen that represents a program, file, or action. Clicking an icon is a shortcut to opening something.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Sharing Information Online</h3>
+                    <p>It's important to keep your personal information private. Never share your full name, address, phone number, or school name with strangers online. Sharing your favorite hobby or game character is usually okay!</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Dealing with Strangers</h3>
+                    <p>If a stranger sends you a message online, the safest thing to do is not to reply and to tell a trusted adult, like a parent or teacher, right away.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">What is Cyberbullying?</h3>
+                    <p>Cyberbullying is when someone uses the internet to be mean, to hurt someone's feelings, or to spread rumors. It's never okay. If you see it, tell an adult and support the person being bullied.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Digital Citizenship & Netiquette</h3>
+                    <p>Being a good 'digital citizen' means being kind, respectful, and responsible online. 'Netiquette' is like having good manners on the internet.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Your Digital Footprint</h3>
+                    <p>Everything you do online leaves a 'digital footprint'. This includes websites you visit and things you post. Think before you post, because your footprint can last forever!</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Logging Out</h3>
+                    <p>When you are finished using a website or app, especially on a shared computer, it's important to 'log out'. This prevents other people from getting into your account.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">What is Phishing?</h3>
+                    <p>Phishing is a trick! Scammers send fake emails or messages that look real to try and steal your passwords or personal information. If an email seems weird, asks for your password, or wants you to click a strange link, it might be phishing.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">What is Malware?</h3>
+                    <p>Malware is short for 'malicious software'. It's like a computer virus that can harm your device or steal your information. A 'Trojan horse' is a type of malware that pretends to be a fun or useful program.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Ransomware & Spyware</h3>
+                    <p>'Ransomware' is a nasty type of malware that locks your files and demands a payment to get them back. 'Spyware' is malware that secretly watches what you do on your computer.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">What is Spam?</h3>
+                    <p>'Spam' refers to unwanted, junk emails or messages sent to many people. It's best to delete them without opening them.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Clickbait</h3>
+                    <p>'Clickbait' is a tricky headline designed to make you click on it, often leading to a disappointing or misleading article. Don't fall for it!</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Firewalls</h3>
+                    <p>A 'firewall' is like a security guard for your computer or network. It watches the traffic coming in and out and blocks anything that looks dangerous or suspicious.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Secure Websites (HTTPS)</h3>
+                    <p>When you see 'https://' at the start of a website's address, the 'S' stands for 'secure'. It means the connection between your browser and the website is encrypted and private.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">IP Addresses & Domain Names</h3>
+                    <p>An 'IP address' is a unique number for every device on the internet, like a phone number. A 'domain name' (like google.com) is the easy-to-remember name for that address.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Website Cookies</h3>
+                    <p>A 'cookie' is a small file that a website saves on your computer. It remembers things about your visit, like items in a shopping cart or your login information, to make your next visit easier.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Search Engines</h3>
+                    <p>A 'search engine' like Google or Bing is a powerful tool that helps you find information on the vast World Wide Web by searching for keywords.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Copyright and Plagiarism</h3>
+                    <p>'Copyright' is the legal right that protects something you create, like a story or a drawing. 'Plagiarism' is when you copy someone else's work and pretend it's your own, which is not okay.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Encryption</h3>
+                    <p>'Encryption' is the process of scrambling data into a secret code to protect it. Only someone with the right key can unscramble and read the information.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Two-Factor Authentication (2FA)</h3>
+                    <p>'2FA' adds a second layer of security to your accounts. After you enter your password, you have to provide a second piece of information, like a code sent to your phone.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">VPNs (Virtual Private Networks)</h3>
+                    <p>A 'VPN' creates a secure, private tunnel for your internet traffic. It can help protect your privacy and keep your online activities hidden from others.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Data Breaches</h3>
+                    <p>A 'data breach' is a security incident where sensitive or private information is stolen from a company's database by attackers.</p>
+                </section>
+                <section>
+                    <h3 class="font-bold text-xl text-cyan-300 mb-2">Ethical Hacking</h3>
+                    <p>'Ethical hackers' are the good guys! They are hired by companies to find weaknesses in their systems before bad hackers can exploit them.</p>
+                </section>
+            </div>
+            <div class="text-center mt-8">
+                <button id="back-to-home-from-learning-btn" class="action-button btn-blue">Return to Game</button>
             </div>
         </div>
 
@@ -222,6 +341,10 @@
         const rankingContent = document.getElementById('ranking-content');
         const rankingLoading = document.getElementById('ranking-loading');
         const reviewContent = document.getElementById('review-content');
+        const learningCenterBtn = document.getElementById('learning-center-btn');
+        const learningCenterScreen = document.getElementById('learning-center-screen');
+        const learningContent = document.getElementById('learning-content');
+        const backToHomeFromLearningBtn = document.getElementById('back-to-home-from-learning-btn');
 
         // --- Firebase Setup ---
         let db, auth;
@@ -763,12 +886,8 @@
         playAgainBtn.addEventListener('click', () => {
             playSound(clickSound);
             resetGameState();
-            if (username && username.trim() !== '') {
-                startGame();
-            } else {
-                switchScreen('home');
-                usernameInput.value = '';
-            }
+            switchScreen('home');
+            usernameInput.value = '';
         });
 
         rankingFromGameoverBtn.addEventListener('click', () => { playSound(clickSound); switchScreen('ranking'); });
@@ -779,6 +898,19 @@
             switchScreen('review');
         });
         
+        learningCenterBtn.addEventListener('click', () => {
+            playSound && playSound(clickSound);
+            [homeScreen, gameScreen, reviewScreen, rankingScreen].forEach(s => s.classList.add('hidden'));
+            modalOverlay.style.display = 'none';
+            learningCenterScreen.classList.remove('hidden');
+            showLessons();
+        });
+        backToHomeFromLearningBtn.addEventListener('click', () => {
+            playSound && playSound(clickSound);
+            learningCenterScreen.classList.add('hidden');
+            homeScreen.classList.remove('hidden');
+        });
+
         // Initial setup
         resetGameState();
         updateHearts();

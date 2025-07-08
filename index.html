@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberKids - Game with All-Time Ranking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%232d3748' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5h-9v5h-1v-5H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: #ffffff;
+        }
+        .pixel-font { font-family: 'Press Start 2P', cursive; }
+        .main-panel {
+            background: rgba(26, 32, 44, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .action-button { @apply w-full sm:w-auto text-base sm:text-lg pixel-font px-6 py-4 rounded-xl text-white font-bold transition-all duration-300 ease-in-out; }
+        .btn-green { @apply bg-green-500 border-b-4 border-green-700 hover:bg-green-400 hover:border-green-600 transform hover:-translate-y-1; }
+        .btn-blue { @apply bg-blue-500 border-b-4 border-blue-700 hover:bg-blue-400 hover:border-blue-600 transform hover:-translate-y-1; }
+        .btn-purple { @apply bg-purple-500 border-b-4 border-purple-700 hover:bg-purple-400 hover:border-purple-600 transform hover:-translate-y-1; }
+        .btn-orange { @apply bg-orange-500 border-b-4 border-orange-700 hover:bg-orange-400 hover:border-orange-600 transform hover:-translate-y-1; }
+        
+        .answer-btn {
+            @apply w-full text-left px-6 py-5 bg-gray-800/90 rounded-xl text-lg transition-all duration-200 border-4 border-yellow-400 flex items-center gap-4 font-semibold shadow-md;
+            min-height: 64px;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .answer-btn:hover:not(:disabled) {
+            @apply bg-gray-700/90 border-4 border-cyan-400;
+        }
+        .answer-badge {
+            min-width: 2.4em;
+            min-height: 2.4em;
+            margin-right: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background: #facc15;
+            color: #1a202c;
+            font-weight: bold;
+            font-size: 1.1em;
+            border: 2px solid #eab308;
+            box-shadow: 0 2px 8px #0002;
+        }
+        .answer-btn span:last-child {
+            flex: 1 1 0%;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .btn-selected.btn-correct { border-color: #4ade80; background-color: rgba(74, 222, 128, 0.2); animation: glow-green 1.2s ease-in-out; }
+        .btn-selected.btn-incorrect { border-color: #f87171; background-color: rgba(248, 113, 113, 0.2); animation: glow-red 1.2s ease-in-out; }
+        @keyframes glow-green { 0% { box-shadow: 0 0 0px #4ade80; } 50% { box-shadow: 0 0 15px #4ade80, inset 0 0 8px rgba(74, 222, 128, 0.3); } 100% { box-shadow: 0 0 0px #4ade80; } }
+        @keyframes glow-red { 0% { box-shadow: 0 0 0px #f87171; } 50% { box-shadow: 0 0 15px #f87171, inset 0 0 8px rgba(248, 113, 113, 0.3); } 100% { box-shadow: 0 0 0px #f87171; } }
+
+        .heart-icon { color: #ef4444; text-shadow: 0 0 8px #ef4444; transition: all 0.3s ease; }
+        .heart-icon.lost { transform: scale(0.8); opacity: 0.3; }
+
+        /* Sticker Animations */
+        #sticker-container svg {
+            width: 80px;
+            height: 80px;
+        }
+        .st-glow { animation: st-glow-anim 2s ease-in-out infinite; }
+        .st-spin { animation: st-spin-anim 4s linear infinite; }
+        .st-float { animation: st-float-anim 3s ease-in-out infinite; }
+        .st-search { animation: st-search-anim 4s ease-in-out infinite; }
+
+        @keyframes st-glow-anim { 0%, 100% { filter: drop-shadow(0 0 2px #facc15); } 50% { filter: drop-shadow(0 0 10px #facc15); } }
+        @keyframes st-spin-anim { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes st-float-anim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes st-search-anim { 0%, 100% { transform: rotate(-15deg) translateX(-5px); } 50% { transform: rotate(15deg) translateX(5px); } }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="app-container" class="w-full max-w-3xl mx-auto">
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="text-center main-panel p-8 md:p-12">
+            <h1 class="pixel-font text-4xl sm:text-5xl md:text-7xl text-yellow-300 mb-4" style="text-shadow: 4px 4px 0px #000;">CyberKids</h1>
+            <p class="mb-10 text-xl text-gray-300">Your mission: conquer the cyber quiz!</p>
+            <input type="text" id="username-input" placeholder="Enter your callsign..." class="w-full max-w-md mx-auto p-4 rounded-lg text-gray-800 text-lg mb-6 bg-gray-200 focus:outline-none focus:ring-4 ring-offset-2 ring-offset-gray-800 focus:ring-yellow-400">
+            <div id="username-error" class="text-red-400 h-6 mb-4 font-bold hidden">Please enter a username!</div>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button id="start-game-btn" class="action-button btn-green">Start Game</button>
+                <button id="how-to-play-btn" class="action-button btn-orange">How to Play</button>
+                <button id="ranking-btn" class="action-button btn-purple">Ranking</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="hidden main-panel p-6 md:p-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4 p-4 bg-black/20 rounded-xl">
+                <div class="pixel-font text-lg">Level: <span id="level-display" class="text-yellow-300">1</span></div>
+                <div class="pixel-font text-lg">Score: <span id="score-display" class="text-yellow-300">0</span></div>
+                <div class="flex items-center gap-4">
+                    <div id="hearts-container" class="flex gap-3 text-4xl"></div>
+                    <div class="pixel-font text-3xl bg-white/10 px-4 py-2 rounded-lg text-cyan-300"><span id="timer-display">30</span></div>
+                    <button id="mute-btn" class="p-3 bg-white/10 rounded-lg text-2xl hover:bg-white/20 transition-colors">
+                        <span id="sound-on-icon">🔊</span><span id="sound-off-icon" class="hidden">🔇</span>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-2 bg-black/20 p-6 rounded-xl min-h-[150px] flex items-center justify-center">
+                <p id="question-text" class="text-2xl font-semibold text-center text-white"></p>
+            </div>
+            
+            <!-- Sticker Container -->
+            <div id="sticker-container" class="h-24 flex items-center justify-center my-4"></div>
+
+            <div id="answers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+        
+        <!-- All-Time Ranking Screen -->
+        <div id="ranking-screen" class="hidden main-panel p-6 md:p-8">
+            <h2 class="pixel-font text-4xl text-center text-yellow-300 mb-8">All-Time Ranks</h2>
+            <div id="ranking-content" class="max-h-[60vh] overflow-y-auto space-y-2 pr-4">
+                <p id="ranking-loading" class="text-center text-lg">Loading ranks...</p>
+            </div>
+            <div class="text-center mt-8">
+                <button id="back-to-home-from-ranking-btn" class="action-button btn-blue">Return to Base</button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden main-panel p-6 md:p-8">
+            <h2 class="pixel-font text-4xl text-center text-yellow-300 mb-8">Mission Debriefing</h2>
+            <div id="review-content" class="max-h-[60vh] overflow-y-auto space-y-4 pr-4"></div>
+            <div class="text-center mt-8">
+                <button id="back-to-home-from-review-btn" class="action-button btn-blue">Return to Base</button>
+                <button id="back-to-gameover-from-review-btn" class="action-button btn-purple ml-4">Back to Game Over</button>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="modal-overlay" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
+            <!-- How to Play Modal -->
+            <div id="how-to-play-modal" class="hidden main-panel text-left p-8 rounded-2xl max-w-lg w-full">
+                <h2 class="pixel-font text-3xl text-center text-yellow-300 mb-6">How to Play</h2>
+                <ul class="space-y-4 text-lg">
+                    <li class="flex items-start gap-4"><span class="text-2xl text-green-400">1.</span><span>Enter your callsign (username) to begin your mission.</span></li>
+                    <li class="flex items-start gap-4"><span class="text-2xl text-green-400">2.</span><span>You have 3 hearts ❤️. Answering wrong or running out of time costs one heart.</span></li>
+                    <li class="flex items-start gap-4"><span class="text-2xl text-green-400">3.</span><span>Answer each question within the 30-second time limit.</span></li>
+                    <li class="flex items-start gap-4"><span class="text-2xl text-green-400">4.</span><span>Progress through 5 levels of increasing difficulty.</span></li>
+                    <li class="flex items-start gap-4"><span class="text-2xl text-green-400">5.</span><span>If you lose all your hearts, the mission is over!</span></li>
+                    <li class="flex items-start gap-4"><span class="text-2xl text-green-400">6.</span><span>Finish all levels to win and get your final score on the leaderboard!</span></li>
+                </ul>
+                <div class="text-center mt-8">
+                    <button id="close-how-to-play-btn" class="action-button btn-green">Got It!</button>
+                </div>
+            </div>
+
+            <div id="level-complete-modal" class="hidden main-panel text-center p-8 rounded-2xl max-w-md w-full">
+                <h2 class="pixel-font text-4xl text-green-400 mb-4">Mission Success!</h2>
+                <p class="mb-4 text-xl">Next level access granted.</p>
+                <p class="mb-6 text-lg">Initializing in...</p>
+                <p class="pixel-font text-6xl text-yellow-300" id="countdown-display">5</p>
+            </div>
+            <div id="game-over-modal" class="hidden main-panel text-center p-8 rounded-2xl max-w-lg w-full">
+                <h2 id="game-over-title" class="pixel-font text-5xl mb-4"></h2>
+                <p class="mb-4 text-xl">Great effort, Agent <span id="final-username" class="font-bold text-yellow-300"></span>!</p>
+                <p class="mb-8 text-2xl">Final Score: <span id="final-score" class="pixel-font text-green-400"></span></p>
+                <div class="flex flex-col sm:flex-row gap-5 justify-center">
+                    <button id="play-again-btn" class="action-button btn-green">Play Again</button>
+                    <button id="ranking-from-gameover-btn" class="action-button btn-purple">Ranking</button>
+                    <button id="review-final-btn" class="action-button btn-blue">Review Q&amp;A</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- DOM Elements ---
+        const homeScreen = document.getElementById('home-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const rankingScreen = document.getElementById('ranking-screen');
+        const reviewScreen = document.getElementById('review-screen');
+        const usernameInput = document.getElementById('username-input');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const rankingBtn = document.getElementById('ranking-btn');
+        const howToPlayBtn = document.getElementById('how-to-play-btn');
+        const backToHomeFromRankingBtn = document.getElementById('back-to-home-from-ranking-btn');
+        const backToHomeFromReviewBtn = document.getElementById('back-to-home-from-review-btn');
+        const backToGameoverFromReviewBtn = document.getElementById('back-to-gameover-from-review-btn');
+        const usernameError = document.getElementById('username-error');
+        const levelDisplay = document.getElementById('level-display');
+        const scoreDisplay = document.getElementById('score-display');
+        const heartsContainer = document.getElementById('hearts-container');
+        const timerDisplay = document.getElementById('timer-display');
+        const questionText = document.getElementById('question-text');
+        const answersContainer = document.getElementById('answers-container');
+        const stickerContainer = document.getElementById('sticker-container');
+        const muteBtn = document.getElementById('mute-btn');
+        const soundOnIcon = document.getElementById('sound-on-icon');
+        const soundOffIcon = document.getElementById('sound-off-icon');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const howToPlayModal = document.getElementById('how-to-play-modal');
+        const closeHowToPlayBtn = document.getElementById('close-how-to-play-btn');
+        const levelCompleteModal = document.getElementById('level-complete-modal');
+        const countdownDisplay = document.getElementById('countdown-display');
+        const gameOverModal = document.getElementById('game-over-modal');
+        const gameOverTitle = document.getElementById('game-over-title');
+        const finalUsername = document.getElementById('final-username');
+        const finalScore = document.getElementById('final-score');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const rankingFromGameoverBtn = document.getElementById('ranking-from-gameover-btn');
+        const reviewFinalBtn = document.getElementById('review-final-btn');
+        const rankingContent = document.getElementById('ranking-content');
+        const rankingLoading = document.getElementById('ranking-loading');
+        const reviewContent = document.getElementById('review-content');
+
+        // --- Firebase Setup ---
+        let db, auth;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cyberkids-default';
+        try {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (e) {
+            console.error("Firebase initialization failed:", e);
+            rankingBtn.style.display = 'none';
+            rankingFromGameoverBtn.style.display = 'none';
+        }
+
+        // --- Game State, Sounds, and Stickers ---
+        let username = '';
+        let currentLevel, score, hearts, questionsAnsweredInLevel;
+        let timer, timerValue = 30;
+        let sessionQuestions, currentQuestions;
+        let isMuted = false;
+        let gameIsOver = false;
+        let levelUpCountdownInterval;
+        let playedQuestions = [];
+
+        const clickSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination();
+        const correctSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.5 } }).toDestination();
+        const wrongSound = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.4, sustain: 0, release: 0.4 } }).toDestination();
+        const levelUpSound = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.1, decay: 0.5, sustain: 0.2, release: 1 } }).toDestination();
+        const gameOverSound = new Tone.Synth({ oscillator: { type: 'fatsawtooth' }, envelope: { attack: 0.2, decay: 1, sustain: 0, release: 1 } }).toDestination();
+        
+        const ambientNotePlayer = new Tone.Synth({
+            oscillator: { type: 'amsine2', modulationType: 'sine', harmonicity: 1.01 },
+            envelope: { attack: 2, decay: 1, sustain: 0.5, release: 4 },
+            volume: -25
+        }).toDestination();
+
+        const ambientSynth = new Tone.Loop(time => {
+            ambientNotePlayer.triggerAttackRelease('C2', '4s', time);
+        }, '8s');
+        
+        Tone.Transport.start();
+
+        const stickers = [
+            `<svg viewBox="0 0 100 100" class="st-glow"><path d="M50 20 C65 20 70 30 70 40 C70 55 60 60 60 75 L40 75 C40 60 30 55 30 40 C30 30 35 20 50 20 Z" fill="#fef08a" stroke="#facc15" stroke-width="4"/><path d="M45 80 L55 80" stroke="#facc15" stroke-width="4" stroke-linecap="round"/><path d="M40 85 L60 85" stroke="#facc15" stroke-width="4" stroke-linecap="round"/></svg>`,
+            `<svg viewBox="0 0 100 100" class="st-search"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="none" stroke="#60a5fa" stroke-width="8"/><line x1="65" y1="65" x2="85" y2="85" stroke="#60a5fa" stroke-width="12" stroke-linecap="round"/></g></svg>`,
+            `<svg viewBox="0 0 100 100" class="st-float"><path d="M20 30 L50 10 L80 30 L50 90 Z" fill="#34d399" stroke="#10b981" stroke-width="5" stroke-linejoin="round"/><path d="M20 30 L50 50 L80 30" fill="none" stroke="#a7f3d0" stroke-width="4"/></svg>`,
+            `<svg viewBox="0 0 100 100" class="st-spin"><path d="M50 20 L65 35 L65 65 L50 80 L35 65 L35 35 Z" fill="#a78bfa" stroke="#8b5cf6" stroke-width="5"/><circle cx="50" cy="50" r="10" fill="#c4b5fd"/></svg>`,
+            `<svg viewBox="0 0 100 100" class="st-float"><path d="M25,65 C25,55 20,45 35,35 C50,25 50,25 65,35 C80,45 75,55 75,65 C75,80 65,90 50,90 C35,90 25,80 25,65 Z" fill="#fca5a5" stroke="#f87171" stroke-width="4"/><path d="M40,20 Q50,5 60,20" fill="none" stroke="#f87171" stroke-width="4" stroke-linecap="round" class="st-glow"/></svg>`
+        ];
+
+        const allQuestions = [
+            // Correct answer is always first in this array
+            { q: "What does 'www' stand for in a website address?", a: ["World Wide Web", "World Web Wide", "Web World Wide", "Wrong Way Web"] },
+            { q: "What is a 'phishing' email?", a: ["An email trying to trick you", "An email about fishing", "A friendly email", "A system update email"] },
+            { q: "What should you do if a stranger messages you online?", a: ["Tell a trusted adult", "Reply to them", "Give them your address", "Send them a photo"] },
+            { q: "A strong password should include...", a: ["Letters, numbers, and symbols", "Your pet's name", "Your birthday", "The word 'password'"] },
+            { q: "What is malware?", a: ["Harmful software", "Computer hardware", "A friendly program", "A type of screen"] },
+            { q: "What does a 'browser' do?", a: ["Lets you view websites", "Cleans your computer", "Plays music only", "Writes documents"] },
+            { q: "What is a 'username'?", a: ["A name you use online", "Your real full name", "Your secret code", "Your home address"] },
+            { q: "What is a 'download'?", a: ["Copying a file from the internet to your device", "Sending a file to the internet", "Deleting a file", "Printing a file"] },
+            { q: "What is an 'icon' on a computer screen?", a: ["A small picture that represents a program or file", "A type of computer mouse", "A background image", "A keyboard key"] },
+            { q: "Why should you not share personal information online?", a: ["To stay safe from strangers", "Because it's boring", "To make friends faster", "It is okay to share everything"] },
+            { q: "Is it safe to share your password with your best friend?", a: ["No, passwords should be private", "Yes, if you trust them", "Only if they promise", "Yes, for backup"] },
+            { q: "What is a 'firewall'?", a: ["A network security system", "A wall made of fire", "A computer virus", "A computer cleaning tool"] },
+            { q: "What is generally safe to share online?", a: ["Your favorite hobby", "Your full name", "Your school's name", "Your phone number"] },
+            { q: "If you see something uncomfortable online, you should:", a: ["Tell a parent or teacher", "Share it with friends", "Keep looking at it", "Comment on it"] },
+            { q: "What does 'https://' mean?", a: ["The website is secure", "The website is fast", "The website is not safe", "The website is for HyperText"] },
+            { q: "What is an 'avatar'?", a: ["A character that represents you online", "A type of car", "A real photo of you", "A computer game"] },
+            { q: "What is 'spam'?", a: ["Unwanted emails or messages", "A type of canned meat", "A computer virus", "A friendly message"] },
+            { q: "What should you do if you receive a file from someone you don't know?", a: ["Do not open it and delete it", "Open it immediately", "Forward it to your friends", "Save it for later"] },
+            { q: "What does it mean to be a good 'digital citizen'?", a: ["Being kind and respectful online", "Using the internet all the time", "Having many online friends", "Winning every online game"] },
+            { q: "Why is it important to log out of websites?", a: ["To prevent others from using your account", "To turn off the computer", "To make the internet faster", "It is not important"] },
+            { q: "What is cyberbullying?", a: ["Using the internet to be mean", "An online game", "A way to make friends", "A computer security term"] },
+            { q: "What is a 'digital footprint'?", a: ["The data trail you leave online", "A drawing of a foot", "Your computer's shoe size", "A type of password"] },
+            { q: "Why think before you post?", a: ["Posts can be permanent", "It's not important", "To get more likes", "To make sure it's funny"] },
+            { q: "What is copyright?", a: ["Legal right to your creation", "Right to copy anything", "A type of code", "A social media platform"] },
+            { q: "If your friend is cyberbullied, what should you do?", a: ["Support and report", "Join the bully", "Ignore it", "Laugh at them"] },
+            { q: "What does 'netiquette' mean?", a: ["Good manners online", "A fishing net", "An internet connection", "A social media challenge"] },
+            { q: "What is a 'Trojan horse' in computing?", a: ["Malware disguised as a useful program", "A type of computer hardware", "A character from a story", "A security software"] },
+            { q: "What is a 'cookie' on a website?", a: ["A small file to store information about your visit", "A digital snack", "A computer virus", "A pop-up advertisement"] },
+            { q: "What is 'clickbait'?", a: ["A headline designed to make you click", "A type of computer mouse", "A fishing tool", "A secure link"] },
+            { q: "What does 'URL' stand for?", a: ["Uniform Resource Locator", "Universal Record Link", "Uniform Record Link", "Universal Resource Locator"] },
+            { q: "What is a 'search engine'?", a: ["A tool to find information on the internet", "A type of car engine", "A computer's motor", "A social media app"] },
+            { q: "What is 'plagiarism'?", a: ["Copying someone else's work without permission", "Creating an original work", "Citing your sources", "Reviewing a friend's work"] },
+            { q: "What is a 'meme'?", a: ["A funny image or video spread online", "A type of computer virus", "A secret password", "A computer error message"] },
+            { q: "What is a 'hacker'?", a: ["Someone who tries to access computers without permission", "A computer expert", "A game developer", "A person who chops wood"] },
+            { q: "What is an 'IP address'?", a: ["A unique device address", "A computer chip", "An internet password", "An image protocol"] },
+            { q: "What does a 'CPU' do?", a: ["It's the computer's 'brain'", "It displays images", "It stores files", "It provides power"] },
+            { q: "What is 'cloud computing'?", a: ["Using internet servers to store data", "Computing on a cloudy day", "A weather app", "A new type of laptop"] },
+            { q: "What is '2FA'?", a: ["A second step to verify identity", "A long password", "Two people logging in", "A fast login"] },
+            { q: "What is a computer 'virus'?", a: ["A program that copies itself and harms", "A health program", "Antivirus software", "A cleaning tool"] },
+            { q: "What is 'open-source' software?", a: ["Software with public code", "Software that is always open", "Expensive software", "Insecure software"] },
+            { q: "What is 'spyware'?", a: ["Software that secretly watches what you do", "Software for spies", "A type of security camera", "A friendly program"] },
+            { q: "What is a 'botnet'?", a: ["A network of infected computers", "A net for catching bots", "A social network for robots", "A type of fishing net"] },
+            { q: "What does 'ISP' stand for?", a: ["Internet Service Provider", "Internal System Program", "Internet System Protocol", "Internal Service Provider"] },
+            { q: "What is 'data' in computing?", a: ["Information processed or stored by a computer", "The date and time", "A type of computer chip", "A computer's power source"] },
+            { q: "What is RAM?", a: ["Random Access Memory", "Read All Memory", "Run All Memory", "Rapid Access Memory"] },
+            { q: "What is a 'server'?", a: ["A computer that provides data to other computers", "A person who serves food", "A type of computer game", "A computer's screen"] },
+            { q: "What is a 'pixel'?", a: ["The smallest dot on a screen", "A type of fairy", "A computer mouse", "A unit of sound"] },
+            { q: "What is 'bandwidth'?", a: ["The amount of data that can be transferred at one time", "The width of a band", "A musical group", "A type of radio"] },
+            { q: "What is a 'glitch'?", a: ["A small, temporary error in a system", "A type of computer virus", "A feature of a game", "A cute monster"] },
+            { q: "What is an 'algorithm'?", a: ["A set of rules for a computer to follow", "A type of music rhythm", "A computer's power supply", "A social media post"] },
+            { q: "What is 'encryption'?", a: ["Scrambling data for security", "Deleting data", "Making data public", "A type of memory"] },
+            { q: "What is a 'DDoS attack'?", a: ["Overwhelming a server with traffic", "A computer virus", "A security method", "A software update"] },
+            { q: "What is a 'VPN' used for?", a: ["To create a private connection", "To make internet faster", "To block websites", "To install software"] },
+            { q: "What is 'social engineering'?", a: ["Tricking people for info", "A social media site", "Building networks", "A type of hardware"] },
+            { q: "What is a 'zero-day vulnerability'?", a: ["A flaw unknown to developers", "A computer with no security", "A perfect security system", "An easy-to-fix flaw"] },
+            { q: "What is 'ransomware'?", a: ["Malware that locks your files until you pay", "Software you can rent", "A free security program", "A type of online store"] },
+            { q: "What is a 'keylogger'?", a: ["A program that records your keystrokes", "A tool for finding lost keys", "A type of keyboard", "A password manager"] },
+            { q: "What is 'pharming'?", a: ["Redirecting users to a fake website", "Farming in a video game", "A type of antivirus", "Creating a new website"] },
+            { q: "What is 'authentication'?", a: ["The process of verifying who you are", "Writing a story", "Creating a new account", "Deleting an account"] },
+            { q: "What is a 'data breach'?", a: ["When sensitive information is stolen", "When a computer breaks", "When data is backed up", "When data is deleted"] },
+            { q: "What is 'machine learning'?", a: ["When computers learn from data without being explicitly programmed", "When a machine goes to school", "A type of robot", "A computer game about machines"] },
+            { q: "What is the 'Internet of Things' (IoT)?", a: ["A network of physical devices connected to the internet", "A list of all things on the internet", "A type of online store", "A social media platform"] },
+            { q: "What is 'blockchain'?", a: ["A distributed and secure digital ledger", "A chain of blocks in a game", "A type of computer hardware", "A social network"] },
+            { q: "What is 'biometric security'?", a: ["Using physical characteristics like fingerprints for security", "A type of biology measurement", "A security guard robot", "A password made of numbers"] },
+            { q: "What is a 'deepfake'?", a: ["A video or audio clip that has been altered with AI", "A very deep fake story", "A type of online game", "A computer error"] },
+            { q: "What is 'ethical hacking'?", a: ["Hacking a system to find vulnerabilities for the owner", "Hacking for a good cause", "Hacking that is against the law", "A type of computer game"] },
+            { q: "What is 'cryptocurrency'?", a: ["A digital or virtual currency that uses cryptography", "A secret currency for spies", "Money used in a video game", "A type of bank account"] },
+            { q: "What is 'augmented reality' (AR)?", a: ["Overlaying computer-generated images on the real world", "A very realistic dream", "A type of virtual reality", "A new type of computer screen"] },
+            { q: "What is a 'CAPTCHA'?", a: ["A test to tell humans and computers apart", "A type of hat", "A secret code", "A computer's name"] },
+            { q: "What is a 'domain name'?", a: ["The address of a website on the internet", "A name for a kingdom", "A type of computer game", "A user's online name"] }
+        ];
+
+        // --- Functions ---
+        
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex > 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function playSound(sound, note = 'C4', duration = '8n') {
+            if (isMuted) return;
+            if (Tone.context.state !== 'running') Tone.start().catch(console.error);
+            sound.triggerAttackRelease(note, duration);
+        }
+        
+        function toggleAmbientSound(start) {
+            if (isMuted || !start) ambientSynth.stop();
+            else ambientSynth.start(0);
+        }
+
+        function switchScreen(screen) {
+            [homeScreen, gameScreen, reviewScreen, rankingScreen].forEach(s => s.classList.add('hidden'));
+            modalOverlay.style.display = 'none';
+            toggleAmbientSound(screen === 'game');
+
+            if (screen === 'home') homeScreen.classList.remove('hidden');
+            if (screen === 'game') gameScreen.classList.remove('hidden');
+            if (screen === 'review') {
+                reviewScreen.classList.remove('hidden');
+                showReview();
+            }
+            if (screen === 'ranking') {
+                rankingScreen.classList.remove('hidden');
+                showRanking();
+            }
+        }
+        
+        function getLevelConfig(level) {
+            const levels = { 1: 3, 2: 3, 3: 4, 4: 5, 5: 5 };
+            return levels[level] || null;
+        }
+
+        function resetGameState() {
+            currentLevel = 1;
+            score = 0;
+            hearts = 3;
+            questionsAnsweredInLevel = 0;
+            sessionQuestions = [];
+            currentQuestions = [];
+            playedQuestions = [];
+            gameIsOver = false;
+            if (timer) clearInterval(timer);
+            if (levelUpCountdownInterval) clearInterval(levelUpCountdownInterval);
+            modalOverlay.style.display = 'none';
+            levelCompleteModal.classList.add('hidden');
+            gameOverModal.classList.add('hidden');
+            howToPlayModal.classList.add('hidden');
+        }
+
+        function startGame() {
+            resetGameState();
+            username = usernameInput.value.trim();
+            if (!username) { usernameError.classList.remove('hidden'); return; }
+            usernameError.classList.add('hidden');
+            
+            sessionQuestions = shuffle([...allQuestions]);
+
+            updateScoreAndLevel();
+            updateHearts();
+            switchScreen('game');
+            startLevel();
+        }
+
+        function startLevel() {
+            if (gameIsOver) return;
+            questionsAnsweredInLevel = 0;
+            const questionsInLevel = getLevelConfig(currentLevel);
+            if (!questionsInLevel) { endGame(true); return; }
+            currentQuestions = sessionQuestions.splice(0, questionsInLevel);
+            if (currentQuestions.length < questionsInLevel) {
+                endGame(true);
+                return;
+            }
+            // Prepare playedQuestions for this level
+            currentQuestions.forEach(q => {
+                playedQuestions.push({
+                    question: q,
+                    answerOrder: null, // will be set when question is shown
+                    userAnswer: null
+                });
+            });
+            loadNextQuestion();
+        }
+
+        function loadNextQuestion() {
+            if (gameIsOver) return;
+            const questionsInLevel = getLevelConfig(currentLevel);
+            if (questionsAnsweredInLevel >= questionsInLevel) { levelUp(); return; }
+            stickerContainer.innerHTML = stickers[Math.floor(Math.random() * stickers.length)];
+            const questionData = currentQuestions[questionsAnsweredInLevel];
+            const correctAnswerText = questionData.a[0];
+            const shuffledAnswers = shuffle([...questionData.a]);
+            questionText.textContent = questionData.q;
+            answersContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            // Store the answer order for review
+            let playedIdx = playedQuestions.findIndex(pq => pq.question === questionData && pq.answerOrder === null);
+            if (playedIdx !== -1) {
+                playedQuestions[playedIdx].answerOrder = [...shuffledAnswers];
+            }
+            shuffledAnswers.forEach((answerText, idx) => {
+                const button = document.createElement('button');
+                button.classList.add('answer-btn');
+                button.onclick = () => handleAnswer(answerText === correctAnswerText, button, answerText);
+                button.innerHTML = `<span class='answer-badge'>${letters[idx]}</span> <span>${answerText}</span>`;
+                answersContainer.appendChild(button);
+            });
+            resetTimer();
+        }
+        
+        function handleAnswer(isCorrect, button, selectedAnswerText) {
+            if (gameIsOver) return;
+            clearInterval(timer);
+            Array.from(answersContainer.children).forEach(btn => { btn.disabled = true; btn.style.cursor = 'not-allowed'; });
+            const questionData = currentQuestions[questionsAnsweredInLevel];
+            const correctAnswerText = questionData.a[0];
+            // Store the user's selected answer for review
+            let playedIdx = playedQuestions.findIndex(pq => pq.question === questionData && pq.userAnswer === null);
+            if (playedIdx !== -1) {
+                playedQuestions[playedIdx].userAnswer = selectedAnswerText;
+            }
+            if (isCorrect) {
+                playSound(correctSound, 'C5', '8n');
+                button.classList.add('btn-selected', 'btn-correct');
+                score += 10 * currentLevel;
+                updateScoreAndLevel();
+                setTimeout(() => { questionsAnsweredInLevel++; loadNextQuestion(); }, 1200);
+            } else {
+                playSound(wrongSound, 'C3', '4n');
+                button.classList.add('btn-selected', 'btn-incorrect');
+                hearts--;
+                updateHearts();
+                Array.from(answersContainer.children).forEach(btn => {
+                    if(btn.textContent === correctAnswerText) {
+                        btn.classList.add('btn-selected', 'btn-correct');
+                    }
+                });
+                if (hearts <= 0) {
+                    setTimeout(() => endGame(false), 2000);
+                } else {
+                    setTimeout(() => { questionsAnsweredInLevel++; loadNextQuestion(); }, 2000);
+                }
+            }
+        }
+
+        function levelUp() {
+            if (gameIsOver) return;
+            playSound(levelUpSound, 'G4', '2n');
+            currentLevel++;
+            updateScoreAndLevel();
+            if (getLevelConfig(currentLevel) === null) { endGame(true); return; }
+            toggleAmbientSound(false);
+            
+            // Hide all other modals before showing level complete
+            gameOverModal.classList.add('hidden');
+            howToPlayModal.classList.add('hidden');
+            modalOverlay.style.display = 'flex';
+            levelCompleteModal.classList.remove('hidden');
+
+            let countdown = 5;
+            countdownDisplay.textContent = countdown;
+            levelUpCountdownInterval = setInterval(() => {
+                countdown--;
+                countdownDisplay.textContent = countdown;
+                if (countdown === 0) {
+                    clearInterval(levelUpCountdownInterval);
+                    if (gameIsOver) return;
+                    modalOverlay.style.display = 'none';
+                    levelCompleteModal.classList.add('hidden');
+                    toggleAmbientSound(true);
+                    startLevel();
+                }
+            }, 1000);
+        }
+
+        async function endGame(isWinner) {
+            if (gameIsOver) return;
+            gameIsOver = true;
+
+            playSound(gameOverSound, 'C2', '1n');
+            toggleAmbientSound(false);
+            clearInterval(timer);
+            if (levelUpCountdownInterval) clearInterval(levelUpCountdownInterval);
+            
+            finalUsername.textContent = username;
+            finalScore.textContent = score;
+            gameOverTitle.textContent = isWinner ? "You Win!" : "Game Over";
+            gameOverTitle.className = `pixel-font text-5xl mb-4 ${isWinner ? 'text-green-400' : 'text-red-500'}`;
+            
+            // Hide all other modals before showing game over
+            levelCompleteModal.classList.add('hidden');
+            howToPlayModal.classList.add('hidden');
+            modalOverlay.style.display = 'flex';
+            gameOverModal.classList.remove('hidden');
+
+            if (db && score > 0) {
+                try {
+                    const historyCollection = collection(db, `/artifacts/${appId}/public/data/history`);
+                    await addDoc(historyCollection, {
+                        name: username,
+                        score: score,
+                        createdAt: serverTimestamp()
+                    });
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timerValue = 30;
+            timerDisplay.textContent = timerValue;
+            timerDisplay.classList.remove('text-red-400', 'animate-pulse');
+            timer = setInterval(() => {
+                if (gameIsOver) { clearInterval(timer); return; }
+                timerValue--;
+                timerDisplay.textContent = timerValue;
+                if (timerValue <= 10) timerDisplay.classList.add('text-red-400', 'animate-pulse');
+                if (timerValue <= 0) {
+                    clearInterval(timer);
+                    playSound(wrongSound, 'C3', '4n');
+                    hearts--;
+                    updateHearts();
+                    if (hearts <= 0) {
+                        endGame(false);
+                    } else {
+                        const questionsInLevel = getLevelConfig(currentLevel);
+                        questionsAnsweredInLevel++;
+                        if(questionsAnsweredInLevel >= questionsInLevel) {
+                            levelUp();
+                        } else {
+                            loadNextQuestion();
+                        }
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateHearts() {
+            heartsContainer.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const heart = document.createElement('span');
+                heart.textContent = '❤️';
+                heart.classList.add('heart-icon');
+                if (i >= hearts) heart.classList.add('lost');
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        function updateScoreAndLevel() {
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = currentLevel;
+        }
+
+        async function showRanking() {
+            if (!db) {
+                rankingContent.innerHTML = '<p class="text-center text-red-400">Ranking service is unavailable.</p>';
+                return;
+            }
+            rankingLoading.classList.remove('hidden');
+            rankingContent.innerHTML = '';
+            rankingContent.appendChild(rankingLoading);
+
+            try {
+                const historyCollection = collection(db, `/artifacts/${appId}/public/data/history`);
+                const querySnapshot = await getDocs(historyCollection);
+                
+                const playerHighScores = {};
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const name = data.name.toLowerCase();
+                    if (!playerHighScores[name] || data.score > playerHighScores[name].score) {
+                        playerHighScores[name] = { name: data.name, score: data.score, date: data.createdAt?.toDate() };
+                    }
+                });
+
+                const rankedScores = Object.values(playerHighScores).sort((a, b) => b.score - a.score);
+
+                rankingLoading.classList.add('hidden');
+                if (rankedScores.length === 0) {
+                    rankingContent.innerHTML = '<p class="text-center text-lg">No scores yet. Be the first!</p>';
+                    return;
+                }
+                
+                rankedScores.forEach((entry, index) => {
+                    const rank = index + 1;
+                    const scoreElement = document.createElement('div');
+                    scoreElement.className = 'flex justify-between items-center p-3 rounded-lg ' + (rank % 2 === 0 ? 'bg-gray-700/50' : 'bg-gray-800/50');
+                    
+                    const rankDisplay = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                    const dateString = entry.date ? entry.date.toLocaleDateString() : 'N/A';
+
+                    scoreElement.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <span class="font-bold text-xl w-10 text-center">${rankDisplay}</span>
+                            <div>
+                                <p class="text-lg text-white">${entry.name}</p>
+                                <p class="text-xs text-gray-400">on ${dateString}</p>
+                            </div>
+                        </div>
+                        <span class="pixel-font text-xl text-green-400">${entry.score}</span>
+                    `;
+                    rankingContent.appendChild(scoreElement);
+                });
+
+            } catch (error) {
+                console.error("Error fetching ranking: ", error);
+                rankingLoading.classList.add('hidden');
+                rankingContent.innerHTML = '<p class="text-center text-red-400">Could not load ranks.</p>';
+            }
+        }
+        
+        function showReview() {
+            reviewContent.innerHTML = '';
+            if (!playedQuestions.length) {
+                reviewContent.innerHTML = '<p class="text-center text-lg">No questions to review.</p>';
+                return;
+            }
+            let level = 1;
+            let qIndex = 0;
+            for (const pq of playedQuestions) {
+                const q = pq.question;
+                const answerOrder = pq.answerOrder || q.a;
+                const userAnswer = pq.userAnswer;
+                if (qIndex === 0 || (qIndex > 0 && getLevelConfig(level) && qIndex === getLevelConfig(level - 1))) {
+                    const levelTitle = document.createElement('h3');
+                    levelTitle.className = 'pixel-font text-2xl text-purple-400 mt-6 first:mt-0';
+                    levelTitle.textContent = `Level ${level}`;
+                    reviewContent.appendChild(levelTitle);
+                    level++;
+                }
+                const item = document.createElement('div');
+                item.className = 'p-4 bg-black/20 rounded-lg';
+                let answersHtml = '<div class="space-y-2 mt-2">';
+                const correctAnswer = q.a[0];
+                answerOrder.forEach(ans => {
+                    if (ans === correctAnswer && ans === userAnswer) {
+                        answersHtml += `<p class="text-green-300 font-bold">✓ ${ans} (Your answer)</p>`;
+                    } else if (ans === correctAnswer) {
+                        answersHtml += `<p class="text-green-300">✓ ${ans}</p>`;
+                    } else if (ans === userAnswer) {
+                        answersHtml += `<p class="text-blue-300 font-bold">${ans} (Your answer)</p>`;
+                    } else {
+                        answersHtml += `<p class="text-gray-400 ml-5">${ans}</p>`;
+                    }
+                });
+                answersHtml += '</div>';
+                item.innerHTML = `
+                    <p class="font-bold text-yellow-400">Question:</p>
+                    <p class="mb-2 text-gray-200">${q.q}</p>
+                    ${answersHtml}
+                `;
+                reviewContent.appendChild(item);
+                qIndex++;
+            }
+        }
+
+        // --- Event Listeners ---
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            soundOnIcon.classList.toggle('hidden', isMuted);
+            soundOffIcon.classList.toggle('hidden', !isMuted);
+            toggleAmbientSound(!isMuted && !gameScreen.classList.contains('hidden'));
+        });
+        startGameBtn.addEventListener('click', () => { playSound(clickSound); startGame(); });
+        rankingBtn.addEventListener('click', () => { playSound(clickSound); switchScreen('ranking'); });
+        howToPlayBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            gameOverModal.classList.add('hidden');
+            levelCompleteModal.classList.add('hidden');
+            modalOverlay.style.display = 'flex';
+            howToPlayModal.classList.remove('hidden');
+        });
+        closeHowToPlayBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            modalOverlay.style.display = 'none';
+            howToPlayModal.classList.add('hidden');
+        });
+        
+        function returnToHome() {
+            playSound(clickSound);
+            resetGameState();
+            switchScreen('home'); 
+            usernameInput.value = '';
+        }
+
+        backToHomeFromRankingBtn.addEventListener('click', returnToHome);
+        backToHomeFromReviewBtn.addEventListener('click', returnToHome);
+        backToGameoverFromReviewBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            reviewScreen.classList.add('hidden');
+            modalOverlay.style.display = 'flex';
+            gameOverModal.classList.remove('hidden');
+        });
+        playAgainBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            resetGameState();
+            if (username && username.trim() !== '') {
+                startGame();
+            } else {
+                switchScreen('home');
+                usernameInput.value = '';
+            }
+        });
+
+        rankingFromGameoverBtn.addEventListener('click', () => { playSound(clickSound); switchScreen('ranking'); });
+        usernameInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') startGameBtn.click(); });
+        
+        reviewFinalBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            switchScreen('review');
+        });
+        
+        // Initial setup
+        resetGameState();
+        updateHearts();
+    </script>
+</body>
+</html>
